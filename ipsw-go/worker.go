@@ -63,7 +63,6 @@ func Worker(workers int, identifier []string) {
 		if err := resp.Err(); err != nil {
 			log.Println("[Error]", "Do Batch", err)
 		}
-
 		log.Printf("[Info] Downloaded %s", resp.Filename)
 	}
 

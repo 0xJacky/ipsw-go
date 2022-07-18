@@ -5,6 +5,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cast"
 	"log"
+	"os"
 	"sync"
 	"time"
 )
@@ -13,6 +14,7 @@ func doRequest(c *grab.Client, req *grab.Request) (resp *grab.Response) {
 	t := time.NewTicker(5 * time.Second)
 	defer t.Stop()
 	resp = c.Do(req)
+	_ = os.Chmod(resp.Filename, 0777)
 	var lastBytesComplete int64 = 0
 	for {
 		select {
