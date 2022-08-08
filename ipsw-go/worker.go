@@ -12,7 +12,7 @@ func buildReqs(identifier []string, firmwareType FirmwareType) (reqs []*grab.Req
 		info, err := GetLatestFirmwareInfo(v, firmwareType)
 
 		if err != nil {
-			log.Println("[Error]", "GetLatestFirmwareInfo", v)
+			log.Println("[Error]", "GetLatestFirmwareInfo", v, err)
 			continue
 		}
 
