@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.18.4-alpine AS build
+FROM --platform=$BUILDPLATFORM golang:1.19.0-alpine AS build
 WORKDIR /src
 ARG TARGETOS
 ARG TARGETARCH
@@ -10,5 +10,5 @@ RUN --mount=target=. \
 
 FROM alpine
 RUN apk add --no-cache tzdata
-COPY --from=build /out/ipsw-go /
-CMD ["./ipsw-go"]
+COPY --from=build /out/ipsw-go /bin/
+ENTRYPOINT ["ipsw-go"]

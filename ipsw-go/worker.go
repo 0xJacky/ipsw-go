@@ -6,12 +6,10 @@ import (
 	"os"
 )
 
-func Worker(workers int, identifier []string) {
+func buildReqs(identifier []string, firmwareType FirmwareType) (reqs []*grab.Request) {
 	// create multiple download requests
-	var reqs []*grab.Request
-
 	for _, v := range identifier {
-		info, err := GetLatestFirmwareInfo(v)
+		info, err := GetLatestFirmwareInfo(v, firmwareType)
 
 		if err != nil {
 			log.Println("[Error]", "GetLatestFirmwareInfo", v)
@@ -53,6 +51,14 @@ func Worker(workers int, identifier []string) {
 
 		reqs = append(reqs, req)
 	}
+
+	return
+}
+
+func Worker(workers int, identifier []string) {
+	reqs := buildReqs(identifier, ReleaseFirmware)
+
+	reqs = append(reqs, buildReqs(identifier, BetaFirmware)...)
 
 	client := grab.NewClient()
 

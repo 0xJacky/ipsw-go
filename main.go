@@ -34,7 +34,7 @@ func main() {
 
 	s := gocron.NewScheduler(loc)
 
-	_, err = s.Every(1).Day().At(checkAt).Do(ipsw_go.Worker, cfg.Workers, cfg.Identifiers)
+	_, err = s.Every(1).Day().At(checkAt).StartImmediately().Do(ipsw_go.Worker, cfg.Workers, cfg.Identifiers)
 
 	if err != nil {
 		log.Fatalln("[Error] create cron job", err)
