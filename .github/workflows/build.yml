@@ -60,7 +60,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64/v8,linux/arm32/v7,linux/arm32/v6,linux/arm32/v5
+          platforms: linux/amd64,linux/arm64/v8,linux/arm/v7,linux/arm/v6,linux/arm/v5
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
             ${{ secrets.DOCKERHUB_USER }}/ipsw-go:latest
