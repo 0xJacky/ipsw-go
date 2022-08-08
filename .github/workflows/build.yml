@@ -35,10 +35,6 @@ jobs:
         name: Checkout
         uses: actions/checkout@v2
 
-      - name: Get the version
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -64,4 +60,3 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
             ${{ secrets.DOCKERHUB_USER }}/ipsw-go:latest
-            ${{ secrets.DOCKERHUB_USER }}/ipsw-go:${{ steps.get_version.outputs.VERSION }}
