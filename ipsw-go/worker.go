@@ -2,7 +2,7 @@ package ipsw_go
 
 import (
 	"github.com/cavaliergopher/grab/v3"
-	"log"
+	"ipsw-go/logger"
 	"os"
 )
 
@@ -12,17 +12,17 @@ func buildReqs(identifier []string, firmwareType FirmwareType) (reqs []*grab.Req
 		info, err := GetLatestFirmwareInfo(v, firmwareType)
 
 		if err != nil {
-			log.Println("[Error]", "GetLatestFirmwareInfo", v, err)
+			logger.Error("GetLatestFirmwareInfo", v, err)
 			continue
 		}
 
 		if info.Firmware.Url == "" {
-			log.Println("[Error]", "GetLatestFirmwareInfo info.Firmware.Url is empty")
+			logger.Error("GetLatestFirmwareInfo info.Firmware.Url is empty")
 			continue
 		}
 
 		if info.Firmware.Version == "" {
-			log.Println("[Error]", "GetLatestFirmwareInfo info.Firmware.Version is empty")
+			logger.Error("GetLatestFirmwareInfo info.Firmware.Version is empty")
 			continue
 		}
 
@@ -32,12 +32,12 @@ func buildReqs(identifier []string, firmwareType FirmwareType) (reqs []*grab.Req
 			err = os.MkdirAll(dir, 0777)
 
 			if err != nil {
-				log.Println("[Error]", "os.MkdirAll", dir, err)
+				logger.Error("os.MkdirAll", dir, err)
 				continue
 			}
 			err = os.Chmod(dir, 0777)
 			if err != nil {
-				log.Println("[Error]", "os.Chmod", dir, err)
+				logger.Error("os.Chmod", dir, err)
 				continue
 			}
 		}
@@ -45,7 +45,7 @@ func buildReqs(identifier []string, firmwareType FirmwareType) (reqs []*grab.Req
 		req, err := grab.NewRequest(dir+"/.", info.Firmware.Url)
 
 		if err != nil {
-			log.Println("[Error]", "GetLatestFirmwareInfo", v, err)
+			logger.Error("GetLatestFirmwareInfo", v, err)
 			continue
 		}
 
@@ -67,9 +67,9 @@ func Worker(workers int, identifier []string) {
 	// check each response
 	for resp := range respch {
 		if err := resp.Err(); err != nil {
-			log.Println("[Error]", "Do Batch", err)
+			logger.Error("Do Batch", err)
 		}
-		log.Printf("[Info] Downloaded %s", resp.Filename)
+		logger.Infof("[Info] Downloaded %s", resp.Filename)
 	}
 
 }
