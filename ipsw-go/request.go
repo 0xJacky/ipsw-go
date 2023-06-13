@@ -6,13 +6,20 @@ import (
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
-func GetLatestFirmwareInfo(identifier string, firmwareType FirmwareType) (info DeviceFirmware, err error) {
+func GetLatestFirmwareInfo(identifier string, firmwareType FirmwareType, lastTwoVer bool) (info []DeviceFirmware, err error) {
 
-	url := fmt.Sprintf("%s/apple/firmwares/%s/latest?type=%s", "https://betahub.cn/api", identifier, firmwareType)
+	url2 := fmt.Sprintf("%s/apple/firmwares/%s/latest?type=%s", "https://betahub.cn/api", identifier, firmwareType)
 
-	resp, err := http.Get(url)
+	u, _ := url.Parse(url2)
+
+	if lastTwoVer {
+		u.Query().Set("last_two_ver", "true")
+	}
+
+	resp, err := http.Get(u.String())
 
 	if err != nil {
 		err = errors.Wrap(err, "error get latest firmware info http.Get")

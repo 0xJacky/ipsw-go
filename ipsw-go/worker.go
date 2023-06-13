@@ -6,59 +6,61 @@ import (
 	"os"
 )
 
-func buildReqs(identifier []string, firmwareType FirmwareType) (reqs []*grab.Request) {
+func buildReqs(identifier []string, firmwareType FirmwareType, lastTwoVer bool) (reqs []*grab.Request) {
 	// create multiple download requests
 	for _, v := range identifier {
-		info, err := GetLatestFirmwareInfo(v, firmwareType)
+		infos, err := GetLatestFirmwareInfo(v, firmwareType, lastTwoVer)
 
 		if err != nil {
 			logger.Error("GetLatestFirmwareInfo", v, err)
 			continue
 		}
 
-		if info.Firmware.Url == "" {
-			logger.Error("GetLatestFirmwareInfo info.Firmware.Url is empty")
-			continue
-		}
-
-		if info.Firmware.Version == "" {
-			logger.Error("GetLatestFirmwareInfo info.Firmware.Version is empty")
-			continue
-		}
-
-		dir := "downloads/" + info.Firmware.Version
-
-		if _, err = os.Stat(dir); os.IsNotExist(err) {
-			err = os.MkdirAll(dir, 0777)
-
-			if err != nil {
-				logger.Error("os.MkdirAll", dir, err)
+		for _, info := range infos {
+			if info.Firmware.Url == "" {
+				logger.Error("GetLatestFirmwareInfo info.Firmware.Url is empty")
 				continue
 			}
-			err = os.Chmod(dir, 0777)
-			if err != nil {
-				logger.Error("os.Chmod", dir, err)
+
+			if info.Firmware.Version == "" {
+				logger.Error("GetLatestFirmwareInfo info.Firmware.Version is empty")
 				continue
 			}
+
+			dir := "downloads/" + info.Firmware.Version
+
+			if _, err = os.Stat(dir); os.IsNotExist(err) {
+				err = os.MkdirAll(dir, 0777)
+
+				if err != nil {
+					logger.Error("os.MkdirAll", dir, err)
+					continue
+				}
+				err = os.Chmod(dir, 0777)
+				if err != nil {
+					logger.Error("os.Chmod", dir, err)
+					continue
+				}
+			}
+
+			req, err := grab.NewRequest(dir+"/.", info.Firmware.Url)
+
+			if err != nil {
+				logger.Error("GetLatestFirmwareInfo", v, err)
+				continue
+			}
+
+			reqs = append(reqs, req)
 		}
-
-		req, err := grab.NewRequest(dir+"/.", info.Firmware.Url)
-
-		if err != nil {
-			logger.Error("GetLatestFirmwareInfo", v, err)
-			continue
-		}
-
-		reqs = append(reqs, req)
 	}
 
 	return
 }
 
-func Worker(workers int, identifier []string) {
-	reqs := buildReqs(identifier, ReleaseFirmware)
+func Worker(workers int, identifier []string, lastTwoVer bool) {
+	reqs := buildReqs(identifier, ReleaseFirmware, lastTwoVer)
 
-	reqs = append(reqs, buildReqs(identifier, BetaFirmware)...)
+	reqs = append(reqs, buildReqs(identifier, BetaFirmware, lastTwoVer)...)
 
 	client := grab.NewClient()
 

@@ -17,12 +17,14 @@ docker run -dit \
   -e Identifiers=iPhone13,1:iPhone13,2:iPad8,9 \
   -e TZ=Asia/Shanghai \
   -e CheckAt=02:00,04:00,06:00 \
+  -e LastTwoVer=true \
   -v /mnt/user/downloads:/downloads \
   uozi/ipsw-go:latest
 ```
 
 ## Environment Variable
-- **Workers**: concurrent download workers num, default: 1.
+- **Workers**: (optional) concurrent download workers num, default: 1.
 - **Identifiers**: (required) iDevice identifiers, use `:` to separate.
 - **TZ**: (required) timezone string.
 - **CheckAt**: (required) set time to run, use `,` to separate.
+- **LastTwoVer**: (optional) download last two version firmwares.

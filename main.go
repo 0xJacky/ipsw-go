@@ -16,6 +16,7 @@ type config struct {
 	TZ          string   `env:"TZ,required"`
 	CheckAt     string   `env:"CheckAt,required"`
 	Mode        string   `env:"Mode"`
+	LastTwoVer  bool     `env:"LastTwoVer"`
 }
 
 func main() {
@@ -39,7 +40,8 @@ func main() {
 
 	s := gocron.NewScheduler(loc)
 
-	_, err = s.Every(1).Day().At(checkAt).StartImmediately().Do(ipsw_go.Worker, cfg.Workers, cfg.Identifiers)
+	_, err = s.Every(1).Day().At(checkAt).StartImmediately().Do(ipsw_go.Worker, cfg.Workers,
+		cfg.Identifiers, cfg.LastTwoVer)
 
 	if err != nil {
 		logger.Fatal("[Error] create cron job", err)
