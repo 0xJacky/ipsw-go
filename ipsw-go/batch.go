@@ -19,7 +19,7 @@ func doRequest(c *grab.Client, req *grab.Request) (resp *grab.Response) {
 	for {
 		select {
 		case <-t.C:
-			logger.Infof("file: %s transferred %v / %v (%.2f%%) speed: %v/s\n",
+			logger.Infof("file: %s transferred %v / %v (%.2f%%) speed: %v/s",
 				resp.Filename,
 				humanize.Bytes(cast.ToUint64(resp.BytesComplete())),
 				humanize.Bytes(cast.ToUint64(resp.Size())),
